@@ -595,7 +595,12 @@ function ExtraBars:UpdateButtonCooldown(button, itemType, itemID)
         end
     end
     
-    if start > 0 and duration > 0 then
+    -- Use pcall to safely handle WoW's "secret values" that can't be compared
+    local success, shouldShowCooldown = pcall(function()
+        return start > 0 and duration > 0
+    end)
+    
+    if success and shouldShowCooldown then
         button.cooldown:SetCooldown(start, duration)
     else
         button.cooldown:Clear()
